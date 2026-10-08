@@ -1,0 +1,120 @@
+@import "tailwindcss";
+
+@theme {
+  --color-paper: #f4f2ee;
+  --color-card: #ffffff;
+  --color-ink: #0d0d0d;
+  --color-ink-2: #3a3a3a;
+  --color-mute: #77756f;
+  --color-faint: #a9a6a0;
+  --color-line: rgba(13,13,13,0.1);
+  --color-soft: #e9e6e0;
+}
+
+@layer base {
+  :root {
+    --paper: #f4f2ee;
+    --card: #ffffff;
+    --ink: #0d0d0d;
+    --ink-2: #3a3a3a;
+    --mute: #77756f;
+    --faint: #a9a6a0;
+    --line: rgba(13,13,13,0.1);
+    --soft: #e9e6e0;
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --gutter: clamp(18px, 4vw, 64px);
+  }
+
+  html.lenis, html.lenis body {
+    height: auto;
+  }
+
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+
+  .lenis.lenis-smooth iframe {
+    pointer-events: none;
+  }
+
+  body {
+    @apply bg-paper text-ink antialiased overflow-x-hidden;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  ::selection {
+    @apply bg-ink text-paper;
+  }
+}
+
+@layer components {
+  .section-padding {
+    @apply py-[clamp(96px,14vh,160px)] px-[var(--gutter)];
+  }
+
+  .container-wide {
+    @apply max-w-[1320px] mx-auto w-full;
+  }
+
+  .about-section {
+    background: #e9e6e0;
+  }
+
+  /* Reveal System */
+  .rv {
+    @apply opacity-0 translate-y-6 transition-all duration-1000 ease-[var(--ease)];
+  }
+
+  .rv.is-revealed {
+    @apply opacity-100 translate-y-0;
+  }
+
+  .rv-mask-container {
+    @apply overflow-hidden;
+  }
+
+  .rv-mask {
+    @apply translate-y-full transition-transform duration-1000 ease-[var(--ease)];
+  }
+
+  .rv-mask.is-revealed {
+    @apply translate-y-0;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-6 py-3 rounded-full bg-ink text-white font-medium hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-6 py-3 rounded-full border border-ink bg-transparent text-ink font-medium hover:-translate-y-0.5 hover:bg-ink/5 transition-all duration-300;
+  }
+
+  @keyframes pendulum {
+    0% { transform: rotateZ(-2deg); }
+    50% { transform: rotateZ(2deg); }
+    100% { transform: rotateZ(-2deg); }
+  }
+
+  .architecture-flow {
+    animation: architecture-flow 1.8s linear infinite;
+  }
+
+  @keyframes architecture-flow {
+    to { stroke-dashoffset: -16; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .architecture-flow {
+      animation: none;
+    }
+  }
+}
+
