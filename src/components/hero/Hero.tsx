@@ -93,9 +93,11 @@ export function Hero() {
         <video
           ref={videoRef}
           muted={isMuted}
+          autoPlay
           loop
           playsInline
           preload="auto"
+          poster="/photos/hero-poster.png"
           aria-hidden="true"
           tabIndex={-1}
           style={{
