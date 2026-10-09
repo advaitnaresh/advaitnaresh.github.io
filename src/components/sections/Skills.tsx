@@ -5,13 +5,13 @@ import { SKILL_GROUPS } from "@/lib/data";
 
 // Restrained tonal shifts distinguish families without breaking the site's neutral palette.
 const CATEGORY_STYLE: Record<string, { bg: string; text: string }> = {
-  "Languages":              { bg: "#e9e6e0", text: "#1a2340" },
-  "Software & Backend":     { bg: "#e2e1df", text: "#1a2340" },
-  "Data Engineering":       { bg: "#e6e2da", text: "#1a2340" },
-  "Databases & Storage":    { bg: "#e3e1e5", text: "#1a2340" },
-  "Cloud & Infrastructure": { bg: "#dfe4e2", text: "#1a2340" },
-  "AI & Analytics":         { bg: "#e5e1e6", text: "#1a2340" },
-  "Robotics & Media":       { bg: "#e4e3e0", text: "#1a2340" },
+  "Languages":              { bg: "#1a2340", text: "#f4f2ee" },
+  "Software & Backend":     { bg: "#242b3d", text: "#f4f2ee" },
+  "Data Engineering":       { bg: "#333338", text: "#f4f2ee" },
+  "Databases & Storage":    { bg: "#2c2a33", text: "#f4f2ee" },
+  "Cloud & Infrastructure": { bg: "#293431", text: "#f4f2ee" },
+  "AI & Analytics":         { bg: "#312c36", text: "#f4f2ee" },
+  "Robotics & Media":       { bg: "#383633", text: "#f4f2ee" },
 };
 
 export function Skills() {
@@ -119,10 +119,10 @@ export function Skills() {
           <div className="flex-1">
             <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2">
               {allSkills.map((skill, idx) => {
-                const style = CATEGORY_STYLE[skill.category] ?? { bg: "#e9e6e0", text: "#1a2340" };
+                const style = CATEGORY_STYLE[skill.category] ?? { bg: "#1a2340", text: "#f4f2ee" };
                 const isFaded = focusedCategory && focusedCategory !== skill.category;
                 const isHighlighted = focusedSkill?.id === skill.id;
-                const tileText = isHighlighted ? "#f4f2ee" : style.text;
+                const tileText = isHighlighted ? "#1a2340" : style.text;
 
                 return (
                   <div
@@ -133,9 +133,9 @@ export function Skills() {
                       isFaded ? "opacity-25" : "opacity-100"
                     } ${isHighlighted ? "scale-110 z-10 shadow-xl" : ""}`}
                     style={{
-                      background: isHighlighted ? "#1a2340" : style.bg,
+                      background: isHighlighted ? "#f4f2ee" : style.bg,
                       boxShadow: isHighlighted
-                        ? "0 16px 40px -12px rgba(26,35,64,0.45)"
+                        ? "0 16px 40px -12px rgba(13,13,13,0.4)"
                         : "0 2px 8px rgba(13,13,13,0.08)",
                       transition: "all 0.25s cubic-bezier(0.16,1,0.3,1)",
                     }}
@@ -149,7 +149,7 @@ export function Skills() {
                     <div className="self-stretch flex flex-col items-center justify-center flex-1">
                       {isHighlighted && skill.icon && !failedIcons.has(skill.id) ? (
                         <img
-                          src={`https://cdn.simpleicons.org/${skill.icon}/ffffff`}
+                          src={`https://cdn.simpleicons.org/${skill.icon}/1a2340`}
                           alt={skill.name}
                           className="w-7 h-7 object-contain"
                           onError={() => markIconFailed(skill.id)}
