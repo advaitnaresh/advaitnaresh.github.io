@@ -8,12 +8,20 @@ export function Navigation() {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mobileNavHidden, setMobileNavHidden] = useState(false);
   const progressRef = useRef<HTMLDivElement>(null);
+  const lastScrollRef = useRef(0);
 
   useEffect(() => {
     const handleScroll = () => {
       const scrollPos = window.scrollY;
       setScrolled(scrollPos > 40);
+
+      const scrollDelta = scrollPos - lastScrollRef.current;
+      if (Math.abs(scrollDelta) > 8) {
+        setMobileNavHidden(scrollDelta > 0 && scrollPos > 120);
+        lastScrollRef.current = scrollPos;
+      }
 
       // Scroll progress
       if (progressRef.current) {
@@ -82,7 +90,11 @@ export function Navigation() {
       </div>
 
       {/* Header Container */}
-      <header className="fixed top-0 left-0 right-0 z-40 px-[var(--gutter)] py-6 flex items-center justify-between pointer-events-none">
+      <header
+        className={`fixed top-0 left-0 right-0 z-40 px-[var(--gutter)] pt-[calc(env(safe-area-inset-top)+0.75rem)] pb-3 md:py-6 flex items-center justify-between pointer-events-none transition-transform duration-300 ${
+          mobileNavHidden ? "-translate-y-full md:translate-y-0" : "translate-y-0"
+        }`}
+      >
         {/* Left: Initials / Name */}
         <div className="flex items-center gap-4 pointer-events-auto group cursor-pointer" onClick={() => scrollTo("body")}>
           <div

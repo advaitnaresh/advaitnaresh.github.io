@@ -126,9 +126,23 @@ const DESKTOP_PATHS = {
 };
 
 const MOBILE_PATHS = {
-  india: "M 70 20 C 110 300 35 700 70 1450",
-  flight: "M 70 1450 C 170 1550 170 1800 70 1900",
-  usa: "M 70 1900 C 25 2200 115 2700 70 3200 S 100 3460 70 3650",
+  india: "M 70 20 C 110 420 35 980 70 2040",
+  flight: "M 70 2040 C 170 2180 170 2540 70 2720",
+  usa: "M 70 2720 C 25 3300 115 4050 70 4650 S 100 5100 70 5360",
+};
+
+const DESKTOP_ROUTE = {
+  height: 3940,
+  indiaEnd: 1450,
+  flightEnd: 1900,
+  end: 3650,
+};
+
+const MOBILE_ROUTE = {
+  height: 5690,
+  indiaEnd: 2040,
+  flightEnd: 2720,
+  end: 5360,
 };
 
 function Vehicle({ stage }: { stage: "rickshaw" | "plane" | "car" }) {
@@ -337,30 +351,31 @@ export function Experience() {
 
   useEffect(() => {
     let frame = 0;
+    const route = isMobile ? MOBILE_ROUTE : DESKTOP_ROUTE;
     const update = () => {
       if (!containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
       const viewportCenter = window.innerHeight * 0.52;
-      const routeY = Math.max(20, Math.min(3650, viewportCenter - rect.top));
+      const routeY = Math.max(20, Math.min(route.end, viewportCenter - rect.top));
 
       let next = 0;
-      if (routeY < 1450) {
-        next = ((routeY - 20) / 1430) * 0.44;
-      } else if (routeY < 1900) {
-        next = 0.44 + ((routeY - 1450) / 450) * 0.14;
+      if (routeY < route.indiaEnd) {
+        next = ((routeY - 20) / (route.indiaEnd - 20)) * 0.44;
+      } else if (routeY < route.flightEnd) {
+        next = 0.44 + ((routeY - route.indiaEnd) / (route.flightEnd - route.indiaEnd)) * 0.14;
       } else {
-        next = 0.58 + ((routeY - 1900) / 1750) * 0.28;
+        next = 0.58 + ((routeY - route.flightEnd) / (route.end - route.flightEnd)) * 0.28;
       }
-      if (viewportCenter - rect.top > 3650) {
-        next = 0.86 + Math.min(1, (viewportCenter - rect.top - 3650) / 100) * 0.14;
+      if (viewportCenter - rect.top > route.end) {
+        next = 0.86 + Math.min(1, (viewportCenter - rect.top - route.end) / 100) * 0.14;
       }
       next = Math.max(0, Math.min(1, next));
       setProgress(next);
 
       let path = indiaRef.current;
-      if (routeY >= 1450 && routeY < 1900) {
+      if (routeY >= route.indiaEnd && routeY < route.flightEnd) {
         path = flightRef.current;
-      } else if (routeY >= 1900) {
+      } else if (routeY >= route.flightEnd) {
         path = usaRef.current;
       }
       if (path) {
@@ -426,6 +441,7 @@ export function Experience() {
   }, [isMobile]);
 
   const paths = isMobile ? MOBILE_PATHS : DESKTOP_PATHS;
+  const route = isMobile ? MOBILE_ROUTE : DESKTOP_ROUTE;
   const indiaProgress = Math.min(1, progress / 0.44);
   const flightProgress = Math.max(0, Math.min(1, (progress - 0.44) / 0.14));
   const usaProgress = Math.max(0, Math.min(1, (progress - 0.58) / 0.28));
@@ -460,7 +476,7 @@ export function Experience() {
         </div>
       </div>
 
-      <div ref={containerRef} className="relative h-[3940px] max-w-[1180px] mx-auto px-[var(--gutter)]">
+      <div ref={containerRef} className="relative h-[5690px] md:h-[3940px] max-w-[1180px] mx-auto px-[var(--gutter)]">
         {[
           { year: "2024", top: 850, side: "right" },
           { year: "2025", top: 1510, side: "left" },
@@ -480,7 +496,7 @@ export function Experience() {
 
         <svg
           className="absolute inset-0 z-[1] w-full h-full overflow-visible"
-          viewBox="0 0 1000 3940"
+          viewBox={`0 0 1000 ${route.height}`}
           preserveAspectRatio="none"
           aria-hidden="true"
         >
@@ -513,8 +529,8 @@ export function Experience() {
             strokeDasharray="1"
             strokeDashoffset={1 - flightProgress}
           />
-          <circle cx={isMobile ? 70 : 500} cy="1450" r="7" fill="#1a2340" />
-          <circle cx={isMobile ? 70 : 500} cy="1900" r="7" fill="#57068c" />
+          <circle cx={isMobile ? 70 : 500} cy={route.indiaEnd} r="7" fill="#1a2340" />
+          <circle cx={isMobile ? 70 : 500} cy={route.flightEnd} r="7" fill="#57068c" />
           {!isMobile && (
             <>
               <text x="455" y="1422" textAnchor="end" fill="#77756f" fontSize="14" fontFamily="monospace">INDIA · BLR</text>
@@ -549,14 +565,14 @@ export function Experience() {
               className="absolute z-[8] pointer-events-none"
               style={{
                 left: `${checkpoint.x / 10}%`,
-                top: `${(checkpoint.y / 3940) * 100}%`,
+                top: `${(checkpoint.y / route.height) * 100}%`,
                 transform: isMobile
                   ? "translate(-50%, -92%)"
                   : `translate(calc(-50% + ${stop.side === "left" ? 72 : -72}px), -92%)`,
               }}
               aria-hidden="true"
             >
-              <div className="origin-bottom scale-[0.58] md:scale-100">
+              <div className="origin-bottom scale-50 md:scale-100">
                 <Landmark kind={stop.landmark} highlighted={nearby} />
               </div>
             </div>
@@ -567,7 +583,7 @@ export function Experience() {
           className="absolute z-[15] pointer-events-none"
           style={{
             left: isMobile ? "7%" : "50%",
-            top: `${(3650 / 3940) * 100}%`,
+            top: `${(route.end / route.height) * 100}%`,
             transform: isMobile
               ? "translate(calc(-50% + 82px), -92%)"
               : "translate(calc(-50% + 132px), -92%)",
@@ -585,7 +601,7 @@ export function Experience() {
           }`}
           style={{
             left: `${marker.x / 10}%`,
-            top: `${(marker.y / 3940) * 100}%`,
+            top: `${(marker.y / route.height) * 100}%`,
             transform: `translate(-50%, -50%) rotate(${marker.angle}deg)`,
           }}
           aria-hidden="true"
@@ -599,7 +615,7 @@ export function Experience() {
           }`}
           style={{
             left: isMobile ? "7%" : "50%",
-            top: `${(3650 / 3940) * 100}%`,
+            top: `${(route.end / route.height) * 100}%`,
             transform: isMobile ? "translate(-22%, -100%)" : "translate(-42%, -100%)",
           }}
           aria-hidden="true"
@@ -627,7 +643,7 @@ export function Experience() {
             return (
               <article
                 key={`${stop.year}-${stop.title}`}
-                className={`relative h-[430px] flex items-center pl-16 md:pl-0 ${
+                className={`relative h-[680px] md:h-[430px] flex items-center pl-[4.75rem] md:pl-0 ${
                   stop.side === "left" ? "md:justify-start" : "md:justify-end"
                 }`}
               >
