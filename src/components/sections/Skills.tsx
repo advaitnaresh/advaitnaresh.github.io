@@ -3,15 +3,15 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { SKILL_GROUPS } from "@/lib/data";
 
-// Category visual identity — dark tile bg + accent text color (matches reference image style)
+// Restrained tonal shifts distinguish families without breaking the site's neutral palette.
 const CATEGORY_STYLE: Record<string, { bg: string; text: string }> = {
-  "Languages":            { bg: "#1e293b", text: "#7dd3fc" },
-  "Software & Backend":   { bg: "#172554", text: "#93c5fd" },
-  "Data Engineering":     { bg: "#422006", text: "#fdba74" },
-  "Databases & Storage":  { bg: "#1e1b4b", text: "#c4b5fd" },
-  "Cloud & Infrastructure": { bg: "#052e16", text: "#86efac" },
-  "AI & Analytics":       { bg: "#3b0764", text: "#e879f9" },
-  "Robotics & Media":     { bg: "#27272a", text: "#d4d4d8" },
+  "Languages":              { bg: "#e9e6e0", text: "#1a2340" },
+  "Software & Backend":     { bg: "#e2e1df", text: "#1a2340" },
+  "Data Engineering":       { bg: "#e6e2da", text: "#1a2340" },
+  "Databases & Storage":    { bg: "#e3e1e5", text: "#1a2340" },
+  "Cloud & Infrastructure": { bg: "#dfe4e2", text: "#1a2340" },
+  "AI & Analytics":         { bg: "#e5e1e6", text: "#1a2340" },
+  "Robotics & Media":       { bg: "#e4e3e0", text: "#1a2340" },
 };
 
 export function Skills() {
@@ -96,7 +96,6 @@ export function Skills() {
             ALL
           </button>
           {SKILL_GROUPS.map(g => {
-            const style = CATEGORY_STYLE[g.category] ?? { bg: "#1e293b", text: "#fff" };
             return (
               <button
                 key={g.category}
@@ -105,10 +104,9 @@ export function Skills() {
                 onMouseLeave={() => setHoveredCategory(undefined)}
                 className={`px-4 py-1.5 rounded-full text-xs font-mono border transition-all ${
                   focusedCategory === g.category
-                    ? "text-white border-transparent"
+                    ? "bg-[#1a2340] text-paper border-[#1a2340]"
                     : "bg-white/60 text-mute border-line hover:border-ink hover:text-ink"
                 }`}
-                style={focusedCategory === g.category ? { background: style.bg, borderColor: style.bg } : {}}
               >
                 {g.category}
               </button>
@@ -121,9 +119,10 @@ export function Skills() {
           <div className="flex-1">
             <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2">
               {allSkills.map((skill, idx) => {
-                const style = CATEGORY_STYLE[skill.category] ?? { bg: "#1e293b", text: "#fff" };
+                const style = CATEGORY_STYLE[skill.category] ?? { bg: "#e9e6e0", text: "#1a2340" };
                 const isFaded = focusedCategory && focusedCategory !== skill.category;
                 const isHighlighted = focusedSkill?.id === skill.id;
+                const tileText = isHighlighted ? "#f4f2ee" : style.text;
 
                 return (
                   <div
@@ -134,15 +133,15 @@ export function Skills() {
                       isFaded ? "opacity-25" : "opacity-100"
                     } ${isHighlighted ? "scale-110 z-10 shadow-xl" : ""}`}
                     style={{
-                      background: style.bg,
+                      background: isHighlighted ? "#1a2340" : style.bg,
                       boxShadow: isHighlighted
-                        ? `0 12px 40px -8px ${style.bg}99`
-                        : "0 2px 8px rgba(0,0,0,0.15)",
+                        ? "0 16px 40px -12px rgba(26,35,64,0.45)"
+                        : "0 2px 8px rgba(13,13,13,0.08)",
                       transition: "all 0.25s cubic-bezier(0.16,1,0.3,1)",
                     }}
                   >
                     {/* index */}
-                    <span className="font-mono text-[9px] leading-none opacity-40" style={{ color: style.text }}>
+                    <span className="font-mono text-[9px] leading-none opacity-40" style={{ color: tileText }}>
                       {String(idx + 1).padStart(2, "0")}
                     </span>
 
@@ -158,7 +157,7 @@ export function Skills() {
                       ) : (
                         <span
                           className="font-bold text-xl md:text-2xl leading-none tracking-tight"
-                          style={{ color: style.text }}
+                          style={{ color: tileText }}
                         >
                           {skill.symbol}
                         </span>
@@ -168,7 +167,7 @@ export function Skills() {
                     {/* name */}
                     <span
                       className="font-mono text-[8px] md:text-[9px] uppercase tracking-wide truncate w-full leading-none"
-                      style={{ color: style.text, opacity: 0.7 }}
+                      style={{ color: tileText, opacity: 0.7 }}
                     >
                       {skill.name}
                     </span>
@@ -182,10 +181,9 @@ export function Skills() {
           <div className="w-full md:w-72 md:sticky md:top-32">
             <div
               className="rounded-2xl border border-line p-6 min-h-[300px] flex flex-col transition-all duration-500"
-              style={{ background: CATEGORY_STYLE[focusedSkill.category]?.bg ?? "#1e293b" }}
+              style={{ background: "#1a2340" }}
             >
               {(() => {
-                const style = CATEGORY_STYLE[focusedSkill.category] ?? { bg: "#1e293b", text: "#7dd3fc" };
                 return (
                   <>
                     <div className="w-20 h-20 rounded-2xl flex items-center justify-center mb-6 shadow-lg" style={{ background: "rgba(255,255,255,0.1)" }}>
@@ -197,11 +195,11 @@ export function Skills() {
                           onError={() => markIconFailed(focusedSkill.id)}
                         />
                       ) : (
-                        <span className="text-4xl font-bold" style={{ color: style.text }}>{focusedSkill.symbol}</span>
+                        <span className="text-4xl font-bold text-paper">{focusedSkill.symbol}</span>
                       )}
                     </div>
                     <h4 className="text-2xl font-bold tracking-tight mb-1 text-white">{focusedSkill.name}</h4>
-                    <p className="font-mono text-xs uppercase tracking-widest mb-auto" style={{ color: style.text, opacity: 0.6 }}>
+                    <p className="font-mono text-xs uppercase tracking-widest mb-auto text-paper/55">
                       {focusedSkill.category}
                     </p>
                     <p className="text-sm mt-6 text-white/60 border-t border-white/10 pt-4">
