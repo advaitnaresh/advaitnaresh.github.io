@@ -85,7 +85,7 @@ export function Hero() {
         </span>
       </div>
 
-      {/* ── Layer 2: Character (video asset has a real alpha channel) ── */}
+      {/* ── Layer 2: Character (HEVC alpha for Safari, VP9 alpha elsewhere) ── */}
       <div
         className="absolute inset-0 flex items-end justify-center pointer-events-none"
         style={{ zIndex: 1 }}
@@ -106,10 +106,12 @@ export function Hero() {
             objectPosition: "bottom center",
             display: "block",
             background: "transparent",
+            WebkitTransform: "translateZ(0)",
+            WebkitBackfaceVisibility: "hidden",
           }}
         >
-          <source src="/videos/hero.webm?v=mask-repair-1" type="video/webm" />
-          <source src="/videos/hero.mp4?v=mask-repair-1" type="video/mp4" />
+          <source src="/videos/hero-ios.mov?v=ios-alpha-1" type='video/mp4; codecs="hvc1"' />
+          <source src="/videos/hero.webm?v=mask-repair-1" type='video/webm; codecs="vp9"' />
         </video>
       </div>
 
